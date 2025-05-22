@@ -1,77 +1,75 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #000;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  margin: 0;
-}
-
-.container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background: #111;
-  border-radius: 10px;
-}
-
-button {
-  background: #333;
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  font-size: 18px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin: 20px 0;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #444;
-}
-
-.slider-container {
-  width: 100%;
-  height: 0; /* Скрываем контейнер */
-  position: relative;
-  margin: 10px 0;
-}
-
-.slider-thumb {
-  display: none; /* Ползунок скрыт */
+/* Основные стили */
+.mobile-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    font-size: 20px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin: 20px 0;
+    cursor: pointer;
+    user-select: none;
 }
 
 .progress-bar {
-  display: flex;
-  gap: 3px;
-  margin: 30px 0;
+    width: 100%;
+    height: 30px;
+    background: #222;
+    border-radius: 15px;
+    position: relative;
+    margin: 30px 0;
+    overflow: hidden;
+    touch-action: none;
 }
 
 .segment {
-  height: 30px;
-  flex: 1;
-  border-radius: 3px;
-  transition: opacity 0.3s;
+    position: absolute;
+    height: 100%;
+    width: 11.11%;
+    transition: opacity 0.3s;
 }
 
-.segment.active {
-  opacity: 0.8;
+/* Цвета сегментов */
+.segment:nth-child(1) { left: 0%; background: #4CAF50; }
+.segment:nth-child(2) { left: 11.11%; background: #4CAF50; }
+.segment:nth-child(3) { left: 22.22%; background: #4CAF50; }
+.segment:nth-child(4) { left: 33.33%; background: #FFEB3B; }
+.segment:nth-child(5) { left: 44.44%; background: #FFEB3B; }
+.segment:nth-child(6) { left: 55.55%; background: #FFEB3B; }
+.segment:nth-child(7) { left: 66.66%; background: #F44336; }
+.segment:nth-child(8) { left: 77.77%; background: #F44336; }
+.segment:nth-child(9) { left: 88.88%; background: #F44336; }
+
+/* Тонкий ползунок */
+.slider-thumb {
+    position: absolute;
+    width: 3px;
+    height: 40px;
+    background: white;
+    top: -5px;
+    left: 0;
+    z-index: 10;
+    border-radius: 3px;
 }
 
-.green { background: #4CAF50; }
-.yellow { background: #FFEB3B; }
-.red { background: #F44336; }
-
-/* Анимация для "найден" */
-@keyframes found {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
+/* Анимации */
 .found-message {
-  animation: found 0.5s infinite;
-  color: red;
-  font-size: 24px;
+    font-size: 24px;
+    color: #ff0000;
+    animation: pulse 0.5s infinite;
+    margin-top: 20px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Оптимизация для разных устройств */
+@media (max-width: 400px) {
+    .segment { width: 11%; }
+    .slider-thumb { height: 35px; }
 }
