@@ -1,50 +1,33 @@
 body {
-    margin: 0;
-    padding: 10px;
     font-family: Arial, sans-serif;
     background: #000;
     color: white;
     text-align: center;
+    margin: 0;
+    padding: 20px;
     touch-action: manipulation;
-    -webkit-user-select: none;
-    user-select: none;
-    overflow-x: hidden;
 }
 
 .container {
     max-width: 100%;
     padding: 15px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
 }
 
 #toggleBtn {
-    display: block;
-    width: 90%;
-    max-width: 300px;
-    padding: 20px;
-    font-size: 22px;
-    margin: 20px 0;
     background: #333;
     color: white;
     border: none;
+    padding: 15px 25px;
+    font-size: 18px;
     border-radius: 10px;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-}
-
-#toggleBtn:active {
-    background: #444;
-    transform: scale(0.98);
+    margin: 15px 0;
+    width: 100%;
+    max-width: 200px;
 }
 
 .progress-bar {
     display: flex;
-    width: 90%;
-    max-width: 400px;
+    width: 100%;
     height: 30px;
     background: #222;
     border-radius: 15px;
@@ -62,44 +45,32 @@ body {
 .yellow { background: #FFEB3B; }
 .red { background: #F44336; }
 
-.vertical-slider-container {
-    width: 60px;
-    height: 200px;
-    background: #222;
-    border-radius: 30px;
-    margin: 20px 0;
-    position: relative;
-    touch-action: none;
-    overflow: hidden;
-}
-
-.vertical-slider-track {
+.slider-container {
     width: 100%;
-    height: 100%;
+    height: 40px;
+    background: #333;
+    border-radius: 20px;
+    margin: 30px 0;
+    position: relative;
 }
 
-.vertical-slider-thumb {
+.slider-thumb {
     position: absolute;
-    width: 60px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     background: white;
-    border-radius: 15px;
+    border-radius: 50%;
     left: 0;
-    bottom: 0;
-    z-index: 10;
+    top: 0;
     cursor: grab;
-    box-shadow: 0 0 10px rgba(255,255,255,0.5);
-    touch-action: none;
-    transform: translateY(50%);
 }
 
-.found-message {
+#foundMessage {
     display: none;
     font-size: 24px;
-    color: #ff0000;
+    color: red;
     margin-top: 20px;
     animation: pulse 0.5s infinite;
-    text-shadow: 0 0 5px red;
 }
 
 @keyframes pulse {
