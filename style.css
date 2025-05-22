@@ -1,64 +1,77 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
-    text-align: center;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
 }
 
 .container {
-    max-width: 400px;
-    margin: 0 auto;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #111;
+  border-radius: 10px;
 }
 
 button {
-    background: #333;
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 20px 0;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #444;
 }
 
 .slider-container {
-    width: 100%;
-    height: 30px;
-    background: #222;
-    border-radius: 5px;
-    position: relative;
-    margin: 20px 0;
-}
-
-.slider-track {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 0; /* Скрываем контейнер */
+  position: relative;
+  margin: 10px 0;
 }
 
 .slider-thumb {
-    width: 20px;
-    height: 40px;
-    background: #555;
-    border-radius: 5px;
-    position: absolute;
-    left: 0;
-    top: -5px;
-    cursor: pointer;
+  display: none; /* Ползунок скрыт */
 }
 
 .progress-bar {
-    display: flex;
-    gap: 5px;
-    margin: 20px 0;
+  display: flex;
+  gap: 3px;
+  margin: 30px 0;
 }
 
 .segment {
-    height: 30px;
-    flex: 1;
-    border-radius: 3px;
+  height: 30px;
+  flex: 1;
+  border-radius: 3px;
+  transition: opacity 0.3s;
+}
+
+.segment.active {
+  opacity: 0.8;
 }
 
 .green { background: #4CAF50; }
 .yellow { background: #FFEB3B; }
 .red { background: #F44336; }
+
+/* Анимация для "найден" */
+@keyframes found {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.found-message {
+  animation: found 0.5s infinite;
+  color: red;
+  font-size: 24px;
+}
