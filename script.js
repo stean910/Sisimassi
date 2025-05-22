@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Элементы
     const toggleBtn = document.getElementById("toggleBtn");
-    const verticalSlider = document.getElementById("verticalSlider");
+    const slider = document.getElementById("slider");
     const progressBar = document.querySelector(".progress-bar");
     const foundMessage = document.getElementById("foundMessage");
     const segments = document.querySelectorAll(".segment");
@@ -14,51 +13,37 @@ document.addEventListener('DOMContentLoaded', function() {
         found: document.getElementById("foundSound")
     };
 
-    // Состояние игры
     let isActive = false;
     let isDragging = false;
     let progress = 0;
     let beepInterval;
-    let lastTapTime = 0;
 
     // Инициализация
     function init() {
         // Предзагрузка звуков
-        Object.values(sounds).forEach(sound => {
-            sound.load();
-            sound.volume = 1.0;
-        });
+        Object.values(sounds).forEach(sound => sound.load());
         
-        // Обработчики кнопки
-        toggleBtn.addEventListener('click', handleToggle);
-        toggleBtn.addEventListener('touchend', function(e) {
-            // Антидребезг для тачей
-            const now = Date.now();
-            if (now - lastTapTime < 300) return;
-            lastTapTime = now;
-            handleToggle(e);
-        });
+        // Обработчики
+        toggleBtn.addEventListener('click', toggleGame);
+        toggleBtn.addEventListener('touchend', toggleGame);
         
-        // Обработчики ползунка
-        verticalSlider.addEventListener('mousedown', startDrag);
-        verticalSlider.addEventListener('touchstart', startDrag, { passive: false });
+        slider.addEventListener('mousedown', startDrag);
+        slider.addEventListener('touchstart', startDrag);
         document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('touchmove', handleDrag, { passive: false });
+        document.addEventListener('touchmove', handleDrag);
         document.addEventListener('mouseup', endDrag);
         document.addEventListener('touchend', endDrag);
     }
 
-    function handleToggle(e) {
+    function toggleGame(e) {
         e.preventDefault();
-        sounds.click.play().catch(e => console.log("Sound error:", e));
-        
+        sounds.click.play();
         isActive = !isActive;
         toggleBtn.textContent = isActive ? "🔘 ВЫКЛ" : "🔘 ВКЛ";
         
         if (isActive) {
-            sounds.start.play().then(() => {
-                resetProgress();
-            }).catch(e => console.log("Start sound error:", e));
+            sounds.start.play();
+            startBeepInterval();
         } else {
             stopGame();
         }
@@ -74,29 +59,26 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDrag(e) {
         if (!isDragging || !isActive) return;
         
-        const rect = verticalSlider.parentElement.getBoundingClientRect();
-        const clientY = e.clientY || (e.touches[0] ? e.touches[0].clientY : 0);
-        progress = Math.max(0, Math.min(100, 100 - ((clientY - rect.top) / rect.height) * 100));
+        const rect = progressBar.getBoundingClientRect();
+        const clientX = e.clientX || e.touches[0].clientX;
+        progress = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
         
         updateSlider();
-        updateProgressBar();
+        updateSegments();
         playBeepSound();
     }
 
     function endDrag() {
         isDragging = false;
-        if (progress >= 95) {
-            triggerFound();
-        } else if (isActive) {
-            startBeepInterval();
-        }
+        if (progress >= 95) triggerFound();
+        if (isActive) startBeepInterval();
     }
 
     function updateSlider() {
-        verticalSlider.style.bottom = `${progress}%`;
+        slider.style.left = `${progress}%`;
     }
 
-    function updateProgressBar() {
+    function updateSegments() {
         segments.forEach((seg, i) => {
             seg.style.opacity = i < Math.floor(progress / 11.11) ? '1' : '0.3';
         });
@@ -105,45 +87,40 @@ document.addEventListener('DOMContentLoaded', function() {
     function playBeepSound() {
         if (progress % 15 < 3) {
             sounds.beep.currentTime = 0;
-            sounds.beep.play().catch(e => console.log("Beep error:", e));
+            sounds.beep.play();
         }
     }
 
     function startBeepInterval() {
         clearInterval(beepInterval);
-        const baseDelay = 1000;
-        const speedFactor = Math.max(0.1, 1 - (progress / 115));
-        
+        const speed = 1000 - (progress * 9); // Ускорение бипов
         beepInterval = setInterval(() => {
-            if (!isDragging && isActive) {
+            if (!isDragging) {
                 sounds.beep.currentTime = 0;
-                sounds.beep.play().catch(e => console.log("Beep error:", e));
+                sounds.beep.play();
             }
-        }, baseDelay * speedFactor);
+        }, speed);
     }
 
     function triggerFound() {
-        sounds.found.play().catch(e => console.log("Found sound error:", e));
+        sounds.found.play();
         foundMessage.style.display = 'block';
-        if (navigator.vibrate) navigator.vibrate([500]);
+        if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
         setTimeout(() => {
             foundMessage.style.display = 'none';
-            resetProgress();
+            resetGame();
         }, 2000);
     }
 
-    function resetProgress() {
+    function resetGame() {
         progress = 0;
         updateSlider();
-        updateProgressBar();
-        if (isActive) startBeepInterval();
+        updateSegments();
     }
 
     function stopGame() {
         clearInterval(beepInterval);
-        progress = 0;
-        updateSlider();
-        updateProgressBar();
+        resetGame();
     }
 
     init();
