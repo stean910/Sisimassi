@@ -16,22 +16,19 @@
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
-        }
-        .container {
-            max-width: 100%;
-            padding: 15px;
-            box-sizing: border-box;
+            overflow-x: hidden;
         }
         #toggleBtn {
             display: block;
             width: 100%;
             padding: 20px;
             font-size: 22px;
-            margin: 20px 0;
+            margin: 25px 0;
             background: #333;
             color: white;
             border: none;
             border-radius: 10px;
+            -webkit-tap-highlight-color: transparent;
         }
     </style>
     <link rel="stylesheet" href="style.css">
@@ -41,7 +38,7 @@
         <h1>🚨 Система поиска пидорасов</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
-        <div class="progress-container">
+        <div class="progress-container" id="progressContainer">
             <div class="progress-bar">
                 <div class="segment green"></div>
                 <div class="segment green"></div>
@@ -58,11 +55,11 @@
         
         <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
         
-        <!-- Звуки с явным preload -->
-        <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
-        <audio id="startSound" src="sounds/start.mp3" preload="auto"></audio>
-        <audio id="beepSound" src="sounds/beep.mp3" preload="auto"></audio>
-        <audio id="foundSound" src="sounds/found.mp3" preload="auto"></audio>
+        <!-- Звуки с preload -->
+        <audio id="clickSound" src="sounds/click.mp3"></audio>
+        <audio id="startSound" src="sounds/start.mp3"></audio>
+        <audio id="beepSound" src="sounds/beep.mp3"></audio>
+        <audio id="foundSound" src="sounds/found.mp3"></audio>
     </div>
 
     <script src="script.js"></script>
