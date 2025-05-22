@@ -20,17 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Инициализация
     function init() {
-        // Предзагрузка звуков
-        Object.values(sounds).forEach(sound => sound.load());
-        
         // Обработчики
         toggleBtn.addEventListener('click', toggleGame);
         toggleBtn.addEventListener('touchend', toggleGame);
         
         slider.addEventListener('mousedown', startDrag);
-        slider.addEventListener('touchstart', startDrag);
+        slider.addEventListener('touchstart', startDrag, { passive: false });
         document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('touchmove', handleDrag);
+        document.addEventListener('touchmove', handleDrag, { passive: false });
         document.addEventListener('mouseup', endDrag);
         document.addEventListener('touchend', endDrag);
     }
@@ -59,12 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDrag(e) {
         if (!isDragging || !isActive) return;
         
-        const rect = progressBar.getBoundingClientRect();
-        const clientX = e.clientX || e.touches[0].clientX;
-        progress = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        const rect = slider.parentElement.getBoundingClientRect();
+        const clientY = e.clientY || e.touches[0].clientY;
+        progress = Math.max(0, Math.min(100, 100 - ((clientY - rect.top) / rect.height) * 100));
         
         updateSlider();
-        updateSegments();
+        updateProgressBar();
         playBeepSound();
     }
 
@@ -75,10 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateSlider() {
-        slider.style.left = `${progress}%`;
+        slider.style.bottom = `${progress}%`;
     }
 
-    function updateSegments() {
+    function updateProgressBar() {
         segments.forEach((seg, i) => {
             seg.style.opacity = i < Math.floor(progress / 11.11) ? '1' : '0.3';
         });
@@ -93,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function startBeepInterval() {
         clearInterval(beepInterval);
-        const speed = 1000 - (progress * 9); // Ускорение бипов
+        const speed = 1000 - (progress * 9);
         beepInterval = setInterval(() => {
             if (!isDragging) {
                 sounds.beep.currentTime = 0;
@@ -115,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetGame() {
         progress = 0;
         updateSlider();
-        updateSegments();
+        updateProgressBar();
     }
 
     function stopGame() {
