@@ -5,25 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Поиск пидорасов</title>
     <style>
-        /* Инлайновые стили для мгновенной загрузки */
+        /* Критическая стилизация для мгновенной загрузки */
         body {
+            margin: 0;
+            padding: 10px;
             font-family: Arial, sans-serif;
             background: #000;
             color: white;
             text-align: center;
-            margin: 0;
-            padding: 10px;
             touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
         }
         .container {
             max-width: 100%;
             padding: 15px;
             box-sizing: border-box;
         }
-        h1 {
+        #toggleBtn {
+            display: block;
+            width: 100%;
+            padding: 20px;
             font-size: 22px;
-            margin-bottom: 20px;
+            margin: 20px 0;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 10px;
         }
     </style>
     <link rel="stylesheet" href="style.css">
@@ -31,30 +39,26 @@
 <body>
     <div class="container">
         <h1>🚨 Система поиска пидорасов</h1>
+        <button id="toggleBtn">🔘 ВКЛ</button>
         
-        <!-- Кнопка активации -->
-        <button id="toggleBtn" class="mobile-btn">🔘 ВКЛ</button>
-        
-        <!-- Шкала с сегментами -->
-        <div class="progress-bar" id="progressBar">
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
-            <div class="segment"></div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="segment green"></div>
+                <div class="segment green"></div>
+                <div class="segment green"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment red"></div>
+                <div class="segment red"></div>
+                <div class="segment red"></div>
+            </div>
             <div class="slider-thumb" id="slider"></div>
         </div>
         
-        <!-- Сообщение "Найден" -->
-        <div id="foundMessage" class="found-message" style="display: none;">
-            ПИДОРАС НАЙДЕН!
-        </div>
+        <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
         
-        <!-- Аудио элементы -->
+        <!-- Звуки с явным preload -->
         <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
         <audio id="startSound" src="sounds/start.mp3" preload="auto"></audio>
         <audio id="beepSound" src="sounds/beep.mp3" preload="auto"></audio>
