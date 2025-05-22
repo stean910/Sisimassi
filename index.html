@@ -2,34 +2,65 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Поиск пидорасов</title>
+    <style>
+        /* Инлайновые стили для мгновенной загрузки */
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .container {
+            max-width: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>🚨 Система поиска пидорасов</h1>
-        <button id="toggleBtn">🔘 ВКЛ</button>
-        <div class="slider-container">
-            <div class="slider-track"></div>
+        
+        <!-- Кнопка активации -->
+        <button id="toggleBtn" class="mobile-btn">🔘 ВКЛ</button>
+        
+        <!-- Шкала с сегментами -->
+        <div class="progress-bar" id="progressBar">
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
+            <div class="segment"></div>
             <div class="slider-thumb" id="slider"></div>
         </div>
-        <div class="progress-bar">
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
+        
+        <!-- Сообщение "Найден" -->
+        <div id="foundMessage" class="found-message" style="display: none;">
+            ПИДОРАС НАЙДЕН!
         </div>
-        <audio id="clickSound" src="sounds/click.mp3"></audio>
-        <audio id="startSound" src="sounds/start.mp3"></audio>
-        <audio id="beepSound" src="sounds/beep.mp3"></audio>
-        <audio id="foundSound" src="sounds/found.mp3"></audio>
+        
+        <!-- Аудио элементы -->
+        <audio id="clickSound" src="sounds/click.mp3" preload="auto"></audio>
+        <audio id="startSound" src="sounds/start.mp3" preload="auto"></audio>
+        <audio id="beepSound" src="sounds/beep.mp3" preload="auto"></audio>
+        <audio id="foundSound" src="sounds/found.mp3" preload="auto"></audio>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
