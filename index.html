@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Поиск пидорасов</title>
+    <title>Поиск пидорасов (Вертикальный)</title>
     <style>
-        /* Критическая стилизация для мгновенной загрузки */
+        /* Критическая стилизация */
         body {
             margin: 0;
             padding: 10px;
@@ -17,13 +17,16 @@
             -webkit-user-select: none;
             user-select: none;
             overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         #toggleBtn {
             display: block;
-            width: 100%;
+            width: 90%;
             padding: 20px;
             font-size: 22px;
-            margin: 25px 0;
+            margin: 15px auto;
             background: #333;
             color: white;
             border: none;
@@ -31,37 +34,37 @@
             -webkit-tap-highlight-color: transparent;
         }
     </style>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-vertical.css">
 </head>
 <body>
     <div class="container">
-        <h1>🚨 Система поиска пидорасов</h1>
+        <h1>🚨 Вертикальный поиск</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
         <div class="progress-container" id="progressContainer">
             <div class="progress-bar">
-                <div class="segment green"></div>
-                <div class="segment green"></div>
-                <div class="segment green"></div>
-                <div class="segment yellow"></div>
-                <div class="segment yellow"></div>
-                <div class="segment yellow"></div>
                 <div class="segment red"></div>
                 <div class="segment red"></div>
                 <div class="segment red"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment green"></div>
+                <div class="segment green"></div>
+                <div class="segment green"></div>
             </div>
             <div class="slider-thumb" id="slider"></div>
         </div>
         
         <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
         
-        <!-- Звуки с preload -->
+        <!-- Звуки -->
         <audio id="clickSound" src="sounds/click.mp3"></audio>
         <audio id="startSound" src="sounds/start.mp3"></audio>
         <audio id="beepSound" src="sounds/beep.mp3"></audio>
         <audio id="foundSound" src="sounds/found.mp3"></audio>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script-vertical.js"></script>
 </body>
 </html>
