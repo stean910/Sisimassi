@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Поиск пидорасов (Вертикальный)</title>
+    <title>Треугольный детектор</title>
     <style>
-        /* Критическая стилизация */
         body {
             margin: 0;
             padding: 10px;
@@ -16,17 +15,13 @@
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
-            overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
         #toggleBtn {
             display: block;
             width: 90%;
             padding: 20px;
             font-size: 22px;
-            margin: 15px auto;
+            margin: 20px auto;
             background: #333;
             color: white;
             border: none;
@@ -34,37 +29,37 @@
             -webkit-tap-highlight-color: transparent;
         }
     </style>
-    <link rel="stylesheet" href="style-vertical.css">
+    <link rel="stylesheet" href="style-triangle.css">
 </head>
 <body>
     <div class="container">
-        <h1>🚨 Вертикальный поиск</h1>
+        <h1>🔺 Треугольный детектор</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
         <div class="progress-container" id="progressContainer">
-            <div class="progress-bar">
-                <div class="segment red"></div>
-                <div class="segment red"></div>
-                <div class="segment red"></div>
-                <div class="segment yellow"></div>
-                <div class="segment yellow"></div>
-                <div class="segment yellow"></div>
-                <div class="segment green"></div>
-                <div class="segment green"></div>
-                <div class="segment green"></div>
+            <!-- Треугольная шкала -->
+            <div class="triangle-scale">
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
+                <div class="triangle-segment"></div>
             </div>
             <div class="slider-thumb" id="slider"></div>
         </div>
         
-        <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
+        <div id="foundMessage" class="found-message">ОБНАРУЖЕНО!</div>
         
-        <!-- Звуки -->
         <audio id="clickSound" src="sounds/click.mp3"></audio>
         <audio id="startSound" src="sounds/start.mp3"></audio>
         <audio id="beepSound" src="sounds/beep.mp3"></audio>
         <audio id="foundSound" src="sounds/found.mp3"></audio>
     </div>
 
-    <script src="script-vertical.js"></script>
+    <script src="script-triangle.js"></script>
 </body>
 </html>
