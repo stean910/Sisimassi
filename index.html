@@ -3,37 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Детектор с ползунком</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            background: #000;
-            color: white;
-            text-align: center;
-            touch-action: manipulation;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        #toggleBtn {
-            display: block;
-            width: 90%;
-            padding: 20px;
-            font-size: 22px;
-            margin: 20px auto;
-            background: #333;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            -webkit-tap-highlight-color: transparent;
-        }
-    </style>
+    <title>Детектор пидорасов</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>🚨 Детектор с ползунком</h1>
+        <h1>Система поиска не хороших людей</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
         <!-- Горизонтальная шкала -->
@@ -55,7 +30,7 @@
             <div class="vertical-slider-thumb" id="verticalSlider"></div>
         </div>
         
-        <div id="foundMessage" class="found-message">ОБНАРУЖЕНО!</div>
+        <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
         
         <audio id="clickSound" src="sounds/click.mp3"></audio>
         <audio id="startSound" src="sounds/start.mp3"></audio>
