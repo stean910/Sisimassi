@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Треугольный детектор</title>
+    <title>Детектор с ползунком</title>
     <style>
         body {
             margin: 0;
@@ -29,27 +29,30 @@
             -webkit-tap-highlight-color: transparent;
         }
     </style>
-    <link rel="stylesheet" href="style-triangle.css">
+    <link rel="stylesheet" href="style-fixed.css">
 </head>
 <body>
     <div class="container">
-        <h1>🔺 Треугольный детектор</h1>
+        <h1>🚨 Детектор с ползунком</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
-        <div class="progress-container" id="progressContainer">
-            <!-- Треугольная шкала -->
-            <div class="triangle-scale">
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-                <div class="triangle-segment"></div>
-            </div>
-            <div class="slider-thumb" id="slider"></div>
+        <!-- Горизонтальная шкала -->
+        <div class="progress-bar">
+            <div class="segment green"></div>
+            <div class="segment green"></div>
+            <div class="segment green"></div>
+            <div class="segment yellow"></div>
+            <div class="segment yellow"></div>
+            <div class="segment yellow"></div>
+            <div class="segment red"></div>
+            <div class="segment red"></div>
+            <div class="segment red"></div>
+        </div>
+        
+        <!-- Вертикальный ползунок -->
+        <div class="vertical-slider-container">
+            <div class="vertical-slider-track"></div>
+            <div class="vertical-slider-thumb" id="verticalSlider"></div>
         </div>
         
         <div id="foundMessage" class="found-message">ОБНАРУЖЕНО!</div>
@@ -60,6 +63,6 @@
         <audio id="foundSound" src="sounds/found.mp3"></audio>
     </div>
 
-    <script src="script-triangle.js"></script>
+    <script src="script-fixed.js"></script>
 </body>
 </html>
