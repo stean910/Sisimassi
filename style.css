@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+button {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 20px 0;
+}
+
+.slider-container {
+    width: 100%;
+    height: 30px;
+    background: #222;
+    border-radius: 5px;
+    position: relative;
+    margin: 20px 0;
+}
+
+.slider-track {
+    width: 100%;
+    height: 100%;
+}
+
+.slider-thumb {
+    width: 20px;
+    height: 40px;
+    background: #555;
+    border-radius: 5px;
+    position: absolute;
+    left: 0;
+    top: -5px;
+    cursor: pointer;
+}
+
+.progress-bar {
+    display: flex;
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.segment {
+    height: 30px;
+    flex: 1;
+    border-radius: 3px;
+}
+
+.green { background: #4CAF50; }
+.yellow { background: #FFEB3B; }
+.red { background: #F44336; }
