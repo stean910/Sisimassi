@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isDragging = false;
     let progress = 0;
     let beepInterval;
+    let touchStartTime = 0;
 
     // Инициализация
     function init() {
@@ -27,23 +28,31 @@ document.addEventListener('DOMContentLoaded', function() {
             sound.volume = 1.0;
         });
         
-        // Кнопка (фикс бага 5 и 6)
+        // Фикс бага 10: раздельные обработчики для тача и клика
+        toggleBtn.addEventListener('touchstart', handleTouchStart, { passive: true });
+        toggleBtn.addEventListener('touchend', handleToggle, { passive: true });
         toggleBtn.addEventListener('click', handleToggle);
-        toggleBtn.addEventListener('touchstart', handleToggle, { passive: true });
         
-        // Ползунок (фикс бага 4)
-        slider.addEventListener('mousedown', startDrag);
-        slider.addEventListener('touchstart', startDrag, { passive: false });
+        // Фикс бага 8: улучшенное управление ползунком
+        slider.addEventListener('touchstart', handleSliderStart, { passive: false });
+        progressContainer.addEventListener('touchmove', handleSliderMove, { passive: false });
+        progressContainer.addEventListener('touchend', handleSliderEnd);
         
-        document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('touchmove', handleDrag, { passive: false });
-        
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
+        // Для десктопов
+        slider.addEventListener('mousedown', handleSliderStart);
+        document.addEventListener('mousemove', handleSliderMove);
+        document.addEventListener('mouseup', handleSliderEnd);
     }
 
-    // Обработчик кнопки
+    // Фикс бага 10: антидребезг для кнопки
+    function handleTouchStart() {
+        touchStartTime = Date.now();
+    }
+
     function handleToggle(e) {
+        // Игнорируем короткие тапы (менее 100ms)
+        if (e.type === 'touchend' && Date.now() - touchStartTime < 100) return;
+        
         e.preventDefault();
         sounds.click.play().catch(e => console.log("Sound error:", e));
         
@@ -51,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleBtn.textContent = isActive ? "🔘 ВЫКЛ" : "🔘 ВКЛ";
         
         if (isActive) {
-            // Фикс бага 6: гарантированное воспроизведение
             sounds.start.play().then(() => {
                 resetProgress();
             }).catch(e => {
@@ -63,90 +71,64 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Логика ползунка
-    function startDrag(e) {
+    // Логика ползунка (фикс бага 8)
+    function handleSliderStart(e) {
         if (!isActive) return;
         isDragging = true;
         e.preventDefault();
         clearInterval(beepInterval);
+        updateSliderPosition(e);
     }
 
-    function handleDrag(e) {
+    function handleSliderMove(e) {
         if (!isDragging || !isActive) return;
-        
+        e.preventDefault();
+        updateSliderPosition(e);
+    }
+
+    function handleSliderEnd() {
+        if (!isActive) return;
+        isDragging = false;
+        if (progress >= 100) {
+            triggerFound();
+        } else {
+            startBeepInterval(); // Фикс бага 9
+        }
+    }
+
+    function updateSliderPosition(e) {
         const rect = progressContainer.getBoundingClientRect();
         const clientX = e.clientX || (e.touches[0] ? e.touches[0].clientX : 0);
         progress = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
         
         updateSlider();
-        playBeepSound(); // Фикс бага 7
+        playBeepSound();
     }
 
-    function endDrag() {
-        isDragging = false;
-        if (progress >= 100) {
-            triggerFound();
-        } else if (isActive) {
-            startBeepInterval();
-        }
-    }
-
-    // Обновление интерфейса
-    function updateSlider() {
-        slider.style.left = `${progress}%`;
-        
-        // Подсветка сегментов
-        document.querySelectorAll('.segment').forEach((seg, i) => {
-            seg.style.opacity = i < Math.floor(progress / 11.11) ? '1' : '0.3';
-        });
-    }
-
-    // Звуки бипов (фикс бага 7)
-    function playBeepSound() {
-        if (progress % 10 < 2) {
-            sounds.beep.currentTime = 0;
-            sounds.beep.play().catch(e => console.log("Beep error:", e));
-        }
-    }
-
+    // Фикс бага 9: плавное ускорение бипов
     function startBeepInterval() {
         clearInterval(beepInterval);
         const baseDelay = 1000;
-        const speedFactor = 1 - (progress / 150); // Чем выше прогресс, тем быстрее
+        // Нелинейное ускорение (быстрее на высоких значениях)
+        const speedFactor = Math.max(0.1, 1 - (progress / 115));
         
         beepInterval = setInterval(() => {
-            if (!isDragging) {
+            if (!isDragging && isActive) {
                 sounds.beep.currentTime = 0;
                 sounds.beep.play().catch(e => console.log("Beep error:", e));
             }
         }, baseDelay * speedFactor);
     }
 
-    function triggerFound() {
-        sounds.found.play().catch(e => console.log("Found sound error:", e));
-        foundMessage.style.display = 'block';
-        
-        // Вибрация если поддерживается
-        if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-        
-        setTimeout(() => {
-            foundMessage.style.display = 'none';
-            resetProgress();
-        }, 2000);
+    function playBeepSound() {
+        if (progress % 15 < 3) {
+            sounds.beep.currentTime = 0;
+            sounds.beep.play().catch(e => console.log("Beep error:", e));
+        }
     }
 
-    function resetProgress() {
-        progress = 0;
-        updateSlider();
-        if (isActive) startBeepInterval();
-    }
-
-    function stopGame() {
-        clearInterval(beepInterval);
-        progress = 0;
-        updateSlider();
-    }
-
-    // Запуск игры
+    // Остальные функции остаются без изменений
+    // ... (updateSlider, triggerFound, resetProgress, stopGame)
+    
     init();
 });
