@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Детектор пидорасов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детектор</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,33 +11,29 @@
         <h1>🚨 Детектор пидорасов</h1>
         <button id="toggleBtn">🔘 ВКЛ</button>
         
-        <!-- Горизонтальная шкала -->
-        <div class="progress-bar">
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
+        <!-- Шкала с ползунком -->
+        <div class="slider-system">
+            <div class="progress-bar">
+                <div class="segment green"></div>
+                <div class="segment green"></div>
+                <div class="segment green"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment yellow"></div>
+                <div class="segment red"></div>
+                <div class="segment red"></div>
+                <div class="segment red"></div>
+            </div>
+            <div class="slider-thumb" id="slider"></div>
         </div>
         
-        <!-- Вертикальный ползунок -->
-        <div class="vertical-slider-container">
-            <div class="vertical-slider-track"></div>
-            <div class="vertical-slider-thumb" id="verticalSlider"></div>
-        </div>
-        
-        <div id="foundMessage" class="found-message">ПИДОРАС НАЙДЕН!</div>
+        <div id="foundMessage">ПИДОРАС НАЙДЕН!</div>
         
         <audio id="clickSound" src="sounds/click.mp3"></audio>
         <audio id="startSound" src="sounds/start.mp3"></audio>
         <audio id="beepSound" src="sounds/beep.mp3"></audio>
         <audio id="foundSound" src="sounds/found.mp3"></audio>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
