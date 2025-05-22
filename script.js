@@ -28,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
             sound.volume = 1.0;
         });
         
-        // Фикс бага 10: раздельные обработчики для тача и клика
+        // Обработчики кнопки
         toggleBtn.addEventListener('touchstart', handleTouchStart, { passive: true });
         toggleBtn.addEventListener('touchend', handleToggle, { passive: true });
         toggleBtn.addEventListener('click', handleToggle);
         
-        // Фикс бага 8: улучшенное управление ползунком
+        // Обработчики ползунка
         slider.addEventListener('touchstart', handleSliderStart, { passive: false });
         progressContainer.addEventListener('touchmove', handleSliderMove, { passive: false });
         progressContainer.addEventListener('touchend', handleSliderEnd);
@@ -44,13 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('mouseup', handleSliderEnd);
     }
 
-    // Фикс бага 10: антидребезг для кнопки
     function handleTouchStart() {
         touchStartTime = Date.now();
     }
 
     function handleToggle(e) {
-        // Игнорируем короткие тапы (менее 100ms)
         if (e.type === 'touchend' && Date.now() - touchStartTime < 100) return;
         
         e.preventDefault();
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Логика ползунка (фикс бага 8)
+    // Вертикальная логика
     function handleSliderStart(e) {
         if (!isActive) return;
         isDragging = true;
@@ -92,24 +90,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (progress >= 100) {
             triggerFound();
         } else {
-            startBeepInterval(); // Фикс бага 9
+            startBeepInterval();
         }
     }
 
     function updateSliderPosition(e) {
         const rect = progressContainer.getBoundingClientRect();
-        const clientX = e.clientX || (e.touches[0] ? e.touches[0].clientX : 0);
-        progress = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        const clientY = e.clientY || (e.touches[0] ? e.touches[0].clientY : 0);
+        progress = Math.max(0, Math.min(100, 100 - ((clientY - rect.top) / rect.height) * 100));
         
-        updateSlider();
+        slider.style.bottom = `${progress}%`;
+        updateSegments();
         playBeepSound();
     }
 
-    // Фикс бага 9: плавное ускорение бипов
+    function updateSegments() {
+        document.querySelectorAll('.segment').forEach((seg, i) => {
+            seg.style.opacity = i < 9 - Math.floor(progress / 11.11) ? '0.3' : '1';
+        });
+    }
+
     function startBeepInterval() {
         clearInterval(beepInterval);
         const baseDelay = 1000;
-        // Нелинейное ускорение (быстрее на высоких значениях)
         const speedFactor = Math.max(0.1, 1 - (progress / 115));
         
         beepInterval = setInterval(() => {
@@ -120,15 +123,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }, baseDelay * speedFactor);
     }
 
-    function playBeepSound() {
-        if (progress % 15 < 3) {
-            sounds.beep.currentTime = 0;
-            sounds.beep.play().catch(e => console.log("Beep error:", e));
-        }
+    function triggerFound() {
+        sounds.found.play().catch(e => console.log("Found sound error:", e));
+        foundMessage.style.display = 'block';
+        if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+        setTimeout(() => {
+            foundMessage.style.display = 'none';
+            resetProgress();
+        }, 2000);
     }
 
-    // Остальные функции остаются без изменений
-    // ... (updateSlider, triggerFound, resetProgress, stopGame)
-    
+    function resetProgress() {
+        progress = 0;
+        slider.style.bottom = "0%";
+        updateSegments();
+        if (isActive) startBeepInterval();
+    }
+
+    function stopGame() {
+        clearInterval(beepInterval);
+        progress = 0;
+        slider.style.bottom = "0%";
+        updateSegments();
+    }
+
     init();
 });
