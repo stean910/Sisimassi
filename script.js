@@ -1,74 +1,68 @@
-// Элементы
+// Инициализация элементов
 const toggleBtn = document.getElementById("toggleBtn");
 const slider = document.getElementById("slider");
-const clickSound = document.getElementById("clickSound");
-const startSound = document.getElementById("startSound");
-const beepSound = document.getElementById("beepSound");
-const foundSound = document.getElementById("foundSound");
+const progressBar = document.getElementById("progressBar");
+const foundMessage = document.getElementById("foundMessage");
 
 // Состояние игры
 let isActive = false;
+let isDragging = false;
 let progress = 0;
-let beepInterval;
 
-// Предзагрузка звуков
-window.onload = function() {
-  [clickSound, startSound, beepSound, foundSound].forEach(s => s.load());
-};
+// Обработчики для сенсорного ввода
+slider.addEventListener('touchstart', handleStart, { passive: false });
+slider.addEventListener('mousedown', handleStart);
 
-// Кнопка ВКЛ/ВЫКЛ
-toggleBtn.addEventListener("click", () => {
-  clickSound.play();
-  isActive = !isActive;
-  
-  if (isActive) {
-    toggleBtn.textContent = "🔘 ВЫКЛ";
-    startSound.play();
-    startProgress();
-  } else {
-    toggleBtn.textContent = "🔘 ВКЛ";
-    stopProgress();
-  }
-});
+document.addEventListener('touchmove', handleMove, { passive: false });
+document.addEventListener('mousemove', handleMove);
 
-// Запуск прогресса
-function startProgress() {
-  progress = 0;
-  beepInterval = setInterval(() => {
-    progress += 1;
+document.addEventListener('touchend', handleEnd);
+document.addEventListener('mouseup', handleEnd);
+
+function handleStart(e) {
+    if (!isActive) return;
+    isDragging = true;
+    e.preventDefault();
+}
+
+function handleMove(e) {
+    if (!isDragging || !isActive) return;
     
-    // Рандомный сброс (15% шанс)
-    if (Math.random() < 0.15 && progress < 70) {
-      progress = 0;
-    }
+    const rect = progressBar.getBoundingClientRect();
+    const clientX = e.clientX || e.touches[0].clientX;
+    let newPos = ((clientX - rect.left) / rect.width) * 100;
     
+    progress = Math.max(0, Math.min(100, newPos));
     updateSlider();
-    
-    if (progress >= 100) {
-      foundSound.play();
-      if (navigator.vibrate) navigator.vibrate([500, 200, 500]); // Вибрация
-      stopProgress();
-    }
-  }, 100);
 }
 
-// Остановка прогресса
-function stopProgress() {
-  clearInterval(beepInterval);
+function handleEnd() {
+    isDragging = false;
+    if (progress >= 100) triggerFound();
 }
 
-// Обновление ползунка
 function updateSlider() {
-  const newPosition = Math.min(100, progress);
-  slider.style.left = `${newPosition}%`;
-  
-  // Ускорение бипов
-  if (progress <= 100 && progress % 10 === 0) {
-    beepSound.play();
-    clearInterval(beepInterval);
-    beepInterval = setInterval(() => {
-      progress += 1;
-      updateSlider();
-    }, Math.max(20, 100 - progress)); // Минимальная задержка 20мс
-  }
+    slider.style.left = `${progress}%`;
+    
+    // Подсветка активных сегментов
+    document.querySelectorAll('.segment').forEach((seg, i) => {
+        seg.style.opacity = i < Math.floor(progress / 11.11) ? '1' : '0.3';
+    });
+    
+    // Звуковое сопровождение
+    if (progress % 15 < 3) beepSound.play();
+}
+
+function triggerFound() {
+    foundSound.play();
+    foundMessage.style.display = 'block';
+    setTimeout(() => {
+        foundMessage.style.display = 'none';
+        resetGame();
+    }, 2000);
+}
+
+function resetGame() {
+    progress = 0;
+    updateSlider();
 }
