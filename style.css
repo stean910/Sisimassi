@@ -1,25 +1,28 @@
-/* Базовая стилизация */
-body {
-    overflow-x: hidden;
+.container {
+    max-width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
 }
 
 .progress-container {
     width: 100%;
     position: relative;
     margin: 40px 0;
+    touch-action: none;
 }
 
 .progress-bar {
     display: flex;
-    height: 30px;
+    height: 35px;
     background: #222;
-    border-radius: 15px;
+    border-radius: 18px;
     overflow: hidden;
 }
 
 .segment {
     flex: 1;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
+    opacity: 0.3;
 }
 
 .green { background: #4CAF50; }
@@ -28,20 +31,20 @@ body {
 
 .slider-thumb {
     position: absolute;
-    width: 3px;
-    height: 40px;
+    width: 4px;
+    height: 45px;
     background: white;
     top: -5px;
     left: 0;
     z-index: 10;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .found-message {
     display: none;
-    font-size: 24px;
+    font-size: 26px;
     color: #ff0000;
-    margin-top: 20px;
+    margin-top: 25px;
     animation: pulse 0.5s infinite;
 }
 
@@ -51,12 +54,8 @@ body {
     100% { transform: scale(1); }
 }
 
-/* Фикс для тач-устройств */
-button {
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Гарантированная работоспособность кнопки */
-#toggleBtn:active {
-    transform: scale(0.98);
+/* Адаптация под маленькие экраны */
+@media (max-width: 400px) {
+    .progress-bar { height: 30px; }
+    .slider-thumb { height: 40px; }
 }
