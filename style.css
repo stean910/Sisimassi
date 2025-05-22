@@ -20,56 +20,63 @@ body {
     padding: 15px 25px;
     font-size: 18px;
     border-radius: 10px;
-    margin: 15px 0;
+    margin: 20px 0;
     width: 100%;
     max-width: 200px;
 }
 
+/* Система шкалы */
+.slider-system {
+    width: 100%;
+    position: relative;
+    margin: 40px 0;
+}
+
+/* Стили шкалы */
 .progress-bar {
     display: flex;
     width: 100%;
     height: 30px;
     background: #222;
     border-radius: 15px;
-    margin: 20px 0;
     overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 .segment {
     flex: 1;
-    transition: opacity 0.3s;
+    transition: all 0.3s;
     opacity: 0.3;
+    border-right: 1px solid #000;
 }
 
 .green { background: #4CAF50; }
 .yellow { background: #FFEB3B; }
 .red { background: #F44336; }
 
-.slider-container {
-    width: 100%;
-    height: 40px;
-    background: #333;
-    border-radius: 20px;
-    margin: 30px 0;
-    position: relative;
-}
-
+/* Яркий ползунок */
 .slider-thumb {
     position: absolute;
-    width: 40px;
+    width: 30px;
     height: 40px;
     background: white;
-    border-radius: 50%;
+    border-radius: 5px;
     left: 0;
-    top: 0;
+    top: -5px;
     cursor: grab;
+    z-index: 10;
+    box-shadow: 
+        0 0 15px rgba(255,255,255,0.8),
+        0 0 5px rgba(0,0,0,0.5);
+    transform: translateX(-50%);
 }
 
 #foundMessage {
     display: none;
-    font-size: 24px;
+    font-size: 26px;
     color: red;
-    margin-top: 20px;
+    margin-top: 25px;
+    text-shadow: 0 0 10px red;
     animation: pulse 0.5s infinite;
 }
 
