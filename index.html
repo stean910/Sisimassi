@@ -1,41 +1,178 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Детектор</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Парусная симуляция</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    background: #e0f7fa;
+  }
+  #race-area {
+    flex: 1;
+    position: relative;
+    background: #a3d5ff;
+    border-right: 2px solid #005f99;
+    overflow: hidden;
+  }
+  #race-area .marker {
+    position: absolute;
+    background: #fff;
+    border: 2px solid #005f99;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 26px;
+    font-weight: bold;
+    color: #005f99;
+  }
+  #yacht {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Sailboat_icon.svg/512px-Sailboat_icon.svg.png') no-repeat center center;
+    background-size: contain;
+    transform-origin: center center;
+  }
+  #wind-arrow {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 80px;
+    height: 80px;
+    border: 2px solid #004d66;
+    border-radius: 50%;
+  }
+  #wind-arrow::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    background: #004d66;
+    transform-origin: 0% 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  #info-panel {
+    width: 320px;
+    background: #ffffffcc;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  button {
+    padding: 10px;
+    font-size: 16px;
+    background: #007acc;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  button:active {
+    background: #005f99;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚨 Детектор пидорасов</h1>
-        <button id="toggleBtn">🔘 ВКЛ</button>
-        
-        <!-- Основная шкала -->
-        <div class="progress-bar">
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment green"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment yellow"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
-            <div class="segment red"></div>
-        </div>
-        
-        <!-- Отдельный вертикальный ползунок -->
-        <div class="vertical-slider">
-            <div class="slider-thumb" id="slider"></div>
-        </div>
-        
-        <div id="foundMessage">ПИДОРАС НАЙДЕН!</div>
-        
-        <audio id="clickSound" src="sounds/click.mp3"></audio>
-        <audio id="startSound" src="sounds/start.mp3"></audio>
-        <audio id="beepSound" src="sounds/beep.mp3"></audio>
-        <audio id="foundSound" src="sounds/found.mp3"></audio>
-    </div>
-    <script src="script.js"></script>
+
+<div id="race-area">
+  <div id="start" class="marker" style="top: 90%; left: 10%;">Старт</div>
+  <div id="mark1" class="marker" style="top: 50%; left: 50%;">1</div>
+  <div id="mark2" class="marker" style="top: 20%; left: 80%;">2</div>
+  <div id="finish" class="marker" style="top: 90%; left: 90%;">Финиш</div>
+  <div id="yacht" style="top: 85%; left: 12%; transform: rotate(0deg);"></div>
+  <div id="wind-arrow"></div>
+</div>
+
+<div id="info-panel">
+  <div><strong>Ветер:</strong> <span id="wind-info">210°, 10 узлов</span></div>
+  <div><strong>Крен яхты:</strong> <span id="heel-info">0°</span></div>
+  <div><strong>Время:</strong> <span id="time-info">00:00</span></div>
+
+  <label for="deepseek-input">Погодные условия (DeepSeek):</label>
+  <textarea id="deepseek-input" placeholder="Введите зашифрованные данные погоды"></textarea>
+
+  <label for="captain-input">Действия гонщика (ChatGPT):</label>
+  <textarea id="captain-input" placeholder="Введите шифр действий гонщика"></textarea>
+
+  <button id="play-btn">Play</button>
+</div>
+
+<script>
+  const windArrow = document.querySelector('#wind-arrow::before') || document.querySelector('#wind-arrow');
+  const windInfo = document.getElementById('wind-info');
+  const heelInfo = document.getElementById('heel-info');
+  const timeInfo = document.getElementById('time-info');
+  const yacht = document.getElementById('yacht');
+
+  // Для простоты — объект с текущим состоянием
+  const state = {
+    windDirection: 210,
+    windSpeed: 10,
+    heel: 0,
+    time: 0,
+    yachtPos: {top: 85, left: 12},
+    yachtAngle: 0,
+  };
+
+  function updateWindArrow(direction) {
+    // Повернем стрелку ветра (в нашем случае - просто элемент #wind-arrow::before не доступен в JS,
+    // сделаем через добавленный элемент внутри #wind-arrow)
+    const arrow = document.querySelector('#wind-arrow div');
+    if (arrow) {
+      arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
+    }
+  }
+
+  function updateUI() {
+    windInfo.textContent = `${state.windDirection}°, ${state.windSpeed} узлов`;
+    heelInfo.textContent = `${state.heel}°`;
+    let minutes = Math.floor(state.time / 60);
+    let seconds = state.time % 60;
+    timeInfo.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+
+    // Обновим позицию яхты и угол
+    yacht.style.top = state.yachtPos.top + '%';
+    yacht.style.left = state.yachtPos.left + '%';
+    yacht.style.transform = `rotate(${state.yachtAngle}deg)`;
+  }
+
+  // Инициализация стрелки ветра — добавим стрелку внутрь #wind-arrow
+  const arrowElem = document.createElement('div');
+  arrowElem.style.position = 'absolute';
+  arrowElem.style.top = '50%';
+  arrowElem.style.left = '50%';
+  arrowElem.style.width = '40px';
+  arrowElem.style.height = '4px';
+  arrowElem.style.background = '#004d66';
+  arrowElem.style.transformOrigin = '0% 50%';
+  arrowElem.style.transform = `translate(-50%, -50%) rotate(${state.windDirection}deg)`;
+  document.getElementById('wind-arrow').appendChild(arrowElem);
+
+  // Инициалный UI
+  updateUI();
+
+  // Обработчик кнопки Play (пока пустой)
+  document.getElementById('play-btn').onclick = () => {
+    alert('Здесь будет запуск симуляции с анализом');
+  }
+</script>
+
 </body>
 </html>
